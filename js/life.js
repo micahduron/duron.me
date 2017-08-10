@@ -148,15 +148,15 @@ LifeModel.prototype = {
     _setCellState: function(cellIndex, state) {
         this._cell[cellIndex] = LifeCell.setState(this._cell[cellIndex], state);
     },
-    setState: function(x, y, state) {
+    setCellNextState: function(x, y, state) {
         if (!(x >= 0 && x < this.cols()) || !(y >= 0 && y < this.rows())) {
-            throw new Error('setState: Coordinates out of range (' +
+            throw new Error('setCellNextState: Coordinates out of range (' +
                 'row = ' + x + ', ' +
                 'col = ' + y + ')');
         }
-        this._setState(y * this.cols() + x, state);
+        this._setCellNextState(y * this.cols() + x, state);
     },
-    _setState: function(cellIndex, state) {
+    _setCellNextState: function(cellIndex, state) {
         this._cell[cellIndex] = LifeCell.setNextState(this._cell[cellIndex], state);
     },
     forEach: function(iterFn) {
@@ -319,7 +319,7 @@ GameOfLife.prototype = {
         var neighborCount = this.countNeighbors(x, y);
         var nextState = this._ruleFn(cellState, neighborCount);
 
-        this._model.setState(x, y, nextState);
+        this._model.setCellNextState(x, y, nextState);
     },
     update: function(updateFn) {
         this._cellUpdateFn = this._cellUpdateFn || function(x, y, cell) {
