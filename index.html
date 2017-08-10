@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html class="no-js">
+    <head>
+        <title>Micah Duron</title>
+        <script>(function(html){html.className=html.className.replace(/no-js/,'js');})(document.documentElement);</script>
+        <style type="text/css">
+            .js .noscript {
+                display:none;
+            }
+            body {
+                margin:0;
+                padding:0;
+            }
+            header {
+                position:fixed;
+                top:0;
+                left:0;
+                height:45px;
+                width:100%;
+                border-bottom:#aaa solid 1px;
+                box-shadow:0 0.1px 1px 1px #aaa;
+            }
+            header .background {
+                background:#fff;
+                position:absolute;
+                opacity:0.75;
+                width:100%;
+                height:100%;
+                z-index:-1;
+            }
+            header > * {
+                margin:0;
+                display:inline-block;
+            }
+            #site-menu {
+                position:absolute;
+                margin-left:20px;
+                height:inherit;
+            }
+            #site-menu > ul {
+                margin:0;
+                padding:0;
+                display:inline-block;
+                height:inherit;
+            }
+            #site-menu ul > a {
+                color:#343434;
+                text-decoration:none;
+                font-family:sans-serif;
+            }
+            #site-menu > ul > a {
+                display:inline-block;
+                line-height:45px;
+                font-size:20px;
+                padding:0 20px;
+            }
+            #site-menu > ul > a:hover {
+                background:#efefef;
+            }
+            #site-banner {
+                font-family:sans-serif;
+                font-size:35px;
+                font-weight:700;
+                line-height:45px;
+                text-shadow:2px 2px 2px #fff;
+            }
+            #page-content {
+                margin-top:45px;
+                display:block;
+            }
+            #main-canvas {
+                position:absolute;
+                z-index:-2;
+            }
+            #js-notice {
+                width:60%;
+                margin:0 auto 0 auto;
+                padding:15px 0 15px 0;
+                text-align:center;
+                background:#fafafa;
+            }
+            #main-canvas {
+                box-shadow:0 1px 3px 3px #aaa;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="js/life.js"></script>
+        <script>
+            'use strict';
+
+            function CreateGrid(canvas, majorAxisCells) {
+                var majorAxis = Math.max(canvas.width, canvas.height);
+                var cellDimension = Math.ceil(majorAxis / majorAxisCells);
+
+                var gridParams = {
+                    cellWidth: cellDimension,
+                    cellHeight: cellDimension
+                };
+                return new GridView(canvas, gridParams);
+            }
+            function SetupCanvas() {
+                var canvas = document.createElement('canvas');
+                canvas.id = 'main-canvas';
+
+                canvas.width = screen.availWidth;
+
+                canvas.height = screen.availHeight;
+                canvas.height -= $('header').height();
+                // Subtract the height of the browser's taskbar
+                canvas.height -= window.outerHeight - window.innerHeight;
+                // Subtract the height of miscellaneous screen elements
+                canvas.height -= screen.height - screen.availHeight;
+
+                $('#page-content').append(canvas);
+
+                return canvas;
+            }
+            function OnFrame(frameFn, fps) {
+                var lastFrameTime = Date.now();
+                var frameTimeDelta = 1000 / fps;
+
+                function animationStep() {
+                    var currTime = Date.now();
+
+                    if ((currTime - lastFrameTime) >= frameTimeDelta) {
+                        lastFrameTime = currTime;
+
+                        frameFn();
+                    }
+                    window.requestAnimationFrame(animationStep);
+                }
+                return animationStep;
+            }
+            $(document).ready(function() {
+                var canvas = SetupCanvas();
+                var gridView = CreateGrid(canvas, 300);
+                var lifeGame = new GameOfLife(gridView);
+
+                lifeGame.fillBoard(function() {
+                    return Math.random() < 0.5;
+                });
+                lifeGame.draw();
+
+                var animationStep = OnFrame(function() {
+                    lifeGame.render();
+                }, 2);
+                window.requestAnimationFrame(animationStep);
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="background"></div>
+            <div id="site-banner">Micah Duron</div>
+            <nav id="site-menu">
+                <ul><a href="/">Home</a></ul>
+                <ul><a href="https://github.com/micahduron/">Github</a></ul>
+                <ul><a href="/resume.pdf">Resume</a></ul>
+            </nav>
+        </header>
+        <div id="page-content">
+            <section class="noscript" id="js-notice">No javascript!</section>
+        </div>
+    </body>
+</html>
