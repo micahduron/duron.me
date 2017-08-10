@@ -102,7 +102,7 @@
                 var canvas = document.createElement('canvas');
                 canvas.id = 'main-canvas';
 
-                canvas.width = screen.availWidth;
+                canvas.width = Math.max($(window).width(), screen.availWidth);
 
                 canvas.height = screen.availHeight;
                 canvas.height -= $('header').height();
