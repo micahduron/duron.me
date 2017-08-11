@@ -20,8 +20,8 @@ function GridView(canvas, params) {
     this._leftPadding = Math.ceil(horizontalPadding);
     this._rightPadding = Math.floor(horizontalPadding);
 
-    this._gridRows = Math.floor(this._params.gridWidth / this._params.cellWidth);
-    this._gridCols = Math.floor(this._params.gridHeight / this._params.cellHeight);
+    this._gridCols = Math.floor(this._params.gridWidth / this._params.cellWidth);
+    this._gridRows = Math.floor(this._params.gridHeight / this._params.cellHeight);
 }
 
 GridView.prototype = {
@@ -34,10 +34,10 @@ GridView.prototype = {
         cellHeight: 1
     },
     rows: function() {
-        return this._gridCols;
+        return this._gridRows;
     },
     cols: function() {
-        return this._gridRows;
+        return this._gridCols;
     },
     cellWidth: function() {
         return this._params.cellWidth;
