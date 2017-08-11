@@ -325,7 +325,7 @@ GameOfLife.prototype = {
         this._cellUpdateFn = this._cellUpdateFn || function(x, y, cell) {
             if (!LifeCell.getState(cell)) return;
             if (LifeCell.isUpdated(cell)) return;
-            
+
             this._nestedUpdateFn = this._nestedUpdatedFn || function(nX, nY, neighbor) {
                 if (LifeCell.getState(neighbor)) return;
                 if (LifeCell.isUpdated(neighbor)) return;
