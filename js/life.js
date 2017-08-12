@@ -305,11 +305,12 @@ GameOfLife.prototype = {
         };
         return this._model.reduceNeighbors(x, y, this._neighborCountFn, 0);
     },
+    _drawCell(x, y, state) {
+        this._grid.fillCell(x, y, state ? 'black' : 'white');
+    },
     draw: function() {
         this._drawFn = this._drawFn || function(x, y, cell) {
-            var cellColor = LifeCell.getState(cell) ? 'black' : 'white';
-
-            this._grid.fillCell(x, y, cellColor);
+            this._drawCell(x, y, LifeCell.getState(cell));
         }.bind(this);
 
         this._model.forEach(this._drawFn);
@@ -351,9 +352,7 @@ GameOfLife.prototype = {
     render: function() {
         this._renderFn = this._renderFn || function(x, y, oldCell, newCell) {
             if (LifeCell.getState(newCell) !== LifeCell.getState(oldCell)) {
-                var cellColor = LifeCell.getState(newCell) ? 'black' : 'white';
-
-                this._grid.fillCell(x, y, cellColor);
+                this._drawCell(x, y, LifeCell.getState(newCell));
             }
         }.bind(this);
 
@@ -361,6 +360,6 @@ GameOfLife.prototype = {
     },
     setCell: function(x, y, state) {
         this._model.setCellState(x, y, state);
-        this._grid.fillCell(x, y, state ? 'black' : 'white');
+        this._drawCell(x, y, state);
     }
 };
