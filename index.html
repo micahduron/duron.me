@@ -116,22 +116,6 @@
 
                 return canvas;
             }
-            function OnFrame(frameFn, fps) {
-                var lastFrameTime = Date.now();
-                var frameTimeDelta = 1000 / fps;
-
-                function animationStep() {
-                    var currTime = Date.now();
-
-                    if ((currTime - lastFrameTime) >= frameTimeDelta) {
-                        lastFrameTime = currTime;
-
-                        frameFn();
-                    }
-                    window.requestAnimationFrame(animationStep);
-                }
-                return animationStep;
-            }
             $(document).ready(function() {
                 var canvas = SetupCanvas();
                 var gridView = CreateGrid(canvas, 300);
@@ -142,10 +126,10 @@
                 });
                 lifeGame.draw();
 
-                var animationStep = OnFrame(function() {
+                var animation = new Animator(function() {
                     lifeGame.render();
-                }, 2);
-                window.requestAnimationFrame(animationStep);
+                });
+                animation.play(2);
             });
         </script>
     </head>
