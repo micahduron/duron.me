@@ -364,30 +364,45 @@ GameOfLife.prototype = {
 };
 
 function Animator(animationFn) {
-    this._animationParams = {frameRate:0, animationFn: animationFn, isRunning: false};
-    this._currParams = null;
+    var animationParams = {frameRate: 0, lastFrameTime: 0, animationFn: animationFn, isRunning: false};
+    this._animationParams = animationParams;
+
+    this._frameFn = (function() {
+        function frameStep() {
+            var currTime = Date.now();
+
+            if ((currTime - animationParams.lastFrameTime) >= animationParams.frameTimeDelta) {
+                animationParams.lastFrameTime = currTime;
+
+                animationParams.animationFn();
+            }
+            if (animationParams.isRunning) {
+                window.requestAnimationFrame(frameStep);
+            }
+        }
+        return frameStep;
+    })();
 }
 Animator.prototype = {
     isRunning: function() {
-        return this._currParams !== null;
+        return this._animationParams.isRunning === true;
     },
     play: function(frameRate) {
         if (this.isRunning()) {
             this.stop();
         }
-        var params = this._makeParams(frameRate);
-        var frameFn = this._makeFrameFn(params);
+        this._animationParams.lastFrameTime = Date.now();
+        this._setFrameRate(frameRate);
 
-        window.requestAnimationFrame(frameFn);
+        this._animationParams.isRunning = true;
+
+        window.requestAnimationFrame(this._frameFn);
     },
     stop: function() {
-        if (!this.isRunning()) return;
-
-        this._currParams.isRunning = false;
-        this._currParams = null;
+        this._animationParams.isRunning = false;
     },
     getFrameRate: function() {
-        return this._currParams ? this._currParams.frameRate : -1;
+        return this.isRunning() ? this._animationParams.frameRate : -1;
     },
     setFrameRate: function(frameRate) {
         if (!this.isRunning()) {
@@ -400,33 +415,7 @@ Animator.prototype = {
         if (frameRate <= 0) {
             throw new Error('Framerate must be a positive value.');
         }
-        this._currParams.frameRate = frameRate;
-        this._currParams.frameTimeDelta = 1000 / frameRate;
-    },
-    _makeParams: function(frameRate) {
-        var params = Object.create(this._animationParams);
-        this._setFrameRate(frameRate);
-        params.isRunning = true;
-
-        this._currParams = params;
-
-        return params;
-    },
-    _makeFrameFn: function(params) {
-        var lastFrameTime = Date.now();
-
-        function frameStep() {
-            var currTime = Date.now();
-
-            if ((currTime - lastFrameTime) >= params.frameTimeDelta) {
-                lastFrameTime = currTime;
-
-                params.animationFn();
-            }
-            if (params.isRunning) {
-                window.requestAnimationFrame(frameStep);
-            }
-        }
-        return frameStep;
+        this._animationParams.frameRate = frameRate;
+        this._animationParams.frameTimeDelta = 1000 / frameRate;
     }
 };
