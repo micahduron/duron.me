@@ -89,6 +89,8 @@
         <script>
             'use strict';
 
+            var DEFAULT_FPS = 3;
+
             function CreateGrid(canvas, majorAxisCells) {
                 var majorAxis = Math.max(canvas.width, canvas.height);
                 var cellDimension = Math.ceil(majorAxis / majorAxisCells);
@@ -129,7 +131,7 @@
                 var animation = new Animator(function() {
                     lifeGame.render();
                 });
-                animation.play(2);
+                animation.play(DEFAULT_FPS);
             });
         </script>
     </head>
