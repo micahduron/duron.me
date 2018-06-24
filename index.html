@@ -83,6 +83,18 @@
             #main-canvas {
                 box-shadow:0 1px 3px 3px #aaa;
             }
+            #display-controls {
+                height: inherit;
+                display: inline;
+                float:right;
+            }
+            #fps-control {
+                line-height: 45px;
+            }
+            #fps-control input {
+                position: relative;
+                top: 5px;
+            }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="js/life.js"></script>
@@ -132,6 +144,13 @@
                     lifeGame.render();
                 });
                 animation.play(DEFAULT_FPS);
+
+                var fpsSlider = $('#fps-slider');
+                fpsSlider.attr('value', DEFAULT_FPS);
+
+                fpsSlider.on('input', function() {
+                    animation.setFrameRate(this.value);
+                });
             });
         </script>
     </head>
@@ -144,6 +163,12 @@
                 <ul><a target="_blank" href="https://github.com/micahduron/">Github</a></ul>
                 <ul><a target="_blank" href="https://www.linkedin.com/in/micah-duron">LinkedIn</a></ul>
             </nav>
+            <div id="display-controls">
+                <span id="fps-control">
+                    <span>Framerate</span>
+                    <input id="fps-slider" type="range" min="1" step="1" max="60" />
+                </span>
+            </div>
         </header>
         <div id="page-content">
             <section class="noscript" id="js-notice">No javascript!</section>
