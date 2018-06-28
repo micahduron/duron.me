@@ -284,12 +284,15 @@ LifeModel.prototype = {
     }
 };
 
-function GameOfLife(gridView, ruleFn) {
+function GameOfLife(gridView, ruleFn, colorFn) {
     this._currGeneration = 0;
     this._ruleFn = ruleFn || GameOfLife.defaultRule;
 
     this._grid = gridView;
     this._model = new LifeModel(gridView.cols(), gridView.rows());
+    this._colorFn = colorFn || function(x, y, state) {
+        return state ? 'black' : 'white';
+    };
 }
 GameOfLife.defaultRule = function(cellState, neighborCount) {
     if (cellState) {
@@ -306,7 +309,7 @@ GameOfLife.prototype = {
         return this._model.reduceNeighbors(x, y, this._neighborCountFn, 0);
     },
     _drawCell(x, y, state) {
-        this._grid.fillCell(x, y, state ? 'black' : 'white');
+        this._grid.fillCell(x, y, this._colorFn(x, y, state));
     },
     draw: function() {
         this._drawFn = this._drawFn || function(x, y, cell) {
